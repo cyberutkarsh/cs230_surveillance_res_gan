@@ -16,19 +16,21 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Test Super Resolution')
     parser.add_argument('--upscale_factor', default=3, type=int, help='super resolution upscale factor')
     parser.add_argument('--model_name', default='epoch_3_100.pt', type=str, help='super resolution model name')
+    parser.add_argument('--dataset_name', default="VOC2012", type=str, help='data set name')
     opt = parser.parse_args()
 
     UPSCALE_FACTOR = opt.upscale_factor
     MODEL_NAME = opt.model_name
+    DATASET_NAME = opt.dataset_name
 
-    path = 'data/test/SRF_' + str(UPSCALE_FACTOR) + '/data/'
+    path = 'data/test/' + DATASET_NAME + '_' + str(UPSCALE_FACTOR) + '/images/'
     images_name = [x for x in listdir(path) if is_image_file(x)]
     model = Net(upscale_factor=UPSCALE_FACTOR)
     if torch.cuda.is_available():
         model = model.cuda()
     model.load_state_dict(torch.load('epochs/' + MODEL_NAME))
 
-    out_path = 'results/SRF_' + str(UPSCALE_FACTOR) + '/'
+    out_path = 'results/' + DATASET_NAME + '_' + str(UPSCALE_FACTOR) + '/images/'
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     for image_name in tqdm(images_name, desc='convert LR images to HR images'):

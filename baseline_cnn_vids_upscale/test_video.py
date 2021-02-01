@@ -19,15 +19,16 @@ if __name__ == "__main__":
     parser.add_argument('--is_real_time', default=False, type=bool, help='super resolution real time to show')
     parser.add_argument('--delay_time', default=1, type=int, help='super resolution delay time to show')
     parser.add_argument('--model_name', default='epoch_3_100.pt', type=str, help='super resolution model name')
+    parser.add_argument('--dataset_name', default="VOC2012", type=str, help='data set name')
     opt = parser.parse_args()
 
     UPSCALE_FACTOR = opt.upscale_factor
     IS_REAL_TIME = opt.is_real_time
     DELAY_TIME = opt.delay_time
     MODEL_NAME = opt.model_name
+    DATASET_NAME = opt.dataset_name
 
-    #path = 'data/test/SRF_' + str(UPSCALE_FACTOR) + '/video/'
-    path = 'data/test/UCF_Abuse_' + str(UPSCALE_FACTOR) + '/video/'
+    path = 'data/test/' + DATASET_NAME + '_' + str(UPSCALE_FACTOR) + '/videos/'
     videos_name = [x for x in listdir(path) if is_video_file(x)]
     model = Net(upscale_factor=UPSCALE_FACTOR)
     if torch.cuda.is_available():
@@ -36,8 +37,7 @@ if __name__ == "__main__":
     # model.load_state_dict(torch.load('epochs/' + MODEL_NAME, map_location=lambda storage, loc: storage))
     model.load_state_dict(torch.load('epochs/' + MODEL_NAME))
 
-    #out_path = 'results/SRF_' + str(UPSCALE_FACTOR) + '/'
-    out_path = 'results/UCF_Abuse_' + str(UPSCALE_FACTOR) + '/'
+    out_path = 'results/' + DATASET_NAME + '_' + str(UPSCALE_FACTOR) + '/videos/'
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     for video_name in tqdm(videos_name, desc='convert LR videos to HR videos'):
