@@ -10,6 +10,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader
 from torchnet.engine import Engine
 from torchnet.logger import VisdomPlotLogger
+#from torchnet.logger import Logger
 from tqdm import tqdm
 
 from data_utils import DatasetFromFolder
@@ -24,10 +25,9 @@ def processor(sample):
     if torch.cuda.is_available():
         data = data.cuda()
         target = target.cuda()
-
+    
     output = model(data)
     loss = criterion(output, target)
-
     return loss, output
 
 
@@ -41,8 +41,12 @@ def reset_meters():
 
 
 def on_forward(state):
-    meter_psnr.add(state['output'].data, state['sample'][1])
-    meter_loss.add(state['loss'].data)
+    if torch.cuda.is_available():
+        meter_psnr.add(state['output'].data.cpu(), state['sample'][1])
+        meter_loss.add(state['loss'].data.cpu())
+    else:
+        meter_psnr.add(state['output'].data, state['sample'][1])
+        meter_loss.add(state['loss'].data)
 
 
 def on_start_epoch(state):
@@ -55,18 +59,18 @@ def on_end_epoch(state):
     print('[Epoch %d] Train Loss: %.4f (PSNR: %.2f db)' % (
         state['epoch'], meter_loss.value()[0], meter_psnr.value()))
 
-    train_loss_logger.log(state['epoch'], meter_loss.value()[0])
-    train_psnr_logger.log(state['epoch'], meter_psnr.value())
+    #train_loss_logger.log(state['epoch'], meter_loss.value()[0])
+    #train_psnr_logger.log(state['epoch'], meter_psnr.value())
 
     reset_meters()
 
     engine.test(processor, val_loader)
-    val_loss_logger.log(state['epoch'], meter_loss.value()[0])
-    val_psnr_logger.log(state['epoch'], meter_psnr.value())
+    #val_loss_logger.log(state['epoch'], meter_loss.value()[0])
+    #val_psnr_logger.log(state['epoch'], meter_psnr.value())
 
     print('[Epoch %d] Val Loss: %.4f (PSNR: %.2f db)' % (
         state['epoch'], meter_loss.value()[0], meter_psnr.value()))
-
+    
     torch.save(model.state_dict(), 'epochs/epoch_%d_%d.pt' % (UPSCALE_FACTOR, state['epoch']))
 
 
@@ -86,8 +90,9 @@ if __name__ == "__main__":
                                   input_transform=transforms.ToTensor(), target_transform=transforms.ToTensor())
     val_set = DatasetFromFolder('data/val', upscale_factor=UPSCALE_FACTOR, dataset_name=DATASET_NAME,
                                 input_transform=transforms.ToTensor(), target_transform=transforms.ToTensor())
-    train_loader = DataLoader(dataset=train_set, num_workers=4, batch_size=64, shuffle=True)
-    val_loader = DataLoader(dataset=val_set, num_workers=4, batch_size=64, shuffle=False)
+    
+    train_loader = DataLoader(dataset=train_set, num_workers=1, batch_size=64, shuffle=True)
+    val_loader = DataLoader(dataset=val_set, num_workers=1, batch_size=64, shuffle=False)
 
     model = Net(upscale_factor=UPSCALE_FACTOR)
     criterion = nn.MSELoss()
@@ -104,14 +109,14 @@ if __name__ == "__main__":
     meter_loss = tnt.meter.AverageValueMeter()
     meter_psnr = PSNRMeter()
 
-    train_loss_logger = VisdomPlotLogger('line', opts={'title': 'Train Loss'})
-    train_psnr_logger = VisdomPlotLogger('line', opts={'title': 'Train PSNR'})
-    val_loss_logger = VisdomPlotLogger('line', opts={'title': 'Val Loss'})
-    val_psnr_logger = VisdomPlotLogger('line', opts={'title': 'Val PSNR'})
+    #train_loss_logger = Logger('line', opts={'title': 'Train Loss'})
+    #train_psnr_logger = Logger('line', opts={'title': 'Train PSNR'})
+    #val_loss_logger = Logger('line', opts={'title': 'Val Loss'})
+    #val_psnr_logger = Logger('line', opts={'title': 'Val PSNR'})
 
     engine.hooks['on_sample'] = on_sample
     engine.hooks['on_forward'] = on_forward
     engine.hooks['on_start_epoch'] = on_start_epoch
     engine.hooks['on_end_epoch'] = on_end_epoch
-
+    
     engine.train(processor, train_loader, maxepoch=NUM_EPOCHS, optimizer=optimizer)
