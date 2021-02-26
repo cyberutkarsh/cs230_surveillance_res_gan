@@ -1,0 +1,6 @@
+torch
+torchvision
+pillow
+git+https://github.com/pytorch/tnt.git@master
+opencv-python
+tqdm
