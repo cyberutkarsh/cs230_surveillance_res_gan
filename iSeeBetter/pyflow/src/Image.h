@@ -59,13 +59,13 @@ public:
 	{
 		T Max=pData[0];
 		for(int i=1;i<nElements;i++)
-			Max=___max(Max,pData[i]);
+			Max=__max(Max,pData[i]);
 		return Max;
 	};
 	T immin() const{
 		T Min=pData[0];
 		for(int i=1;i<nElements;i++)
-			Min=___min(Min,pData[i]);
+			Min=__min(Min,pData[i]);
 		return Min;
 	}
 	template <class T1>
@@ -692,7 +692,7 @@ void Image<T>::moveto(Image<T1>& image,int x0,int y0,int width,int height)
 		width=imWidth;
 	if(height==0)
 		height=imHeight;
-	int NChannels=___min(nChannels,image.nchannels());
+	int NChannels=__min(nChannels,image.nchannels());
 
 	int x,y;
 	for(int i=0;i<height;i++)
@@ -1336,8 +1336,8 @@ template <class T>
 template <class T1>
 void Image<T>::imfilter_hv(Image<T1>& image,const Image<double>& hfilter,const Image<double>& vfilter) const
 {
-	int hfsize = (___max(hfilter.width(),hfilter.height())-1)/2;
-	int vfsize = (___max(vfilter.width(),vfilter.height())-1)/2;
+	int hfsize = (__max(hfilter.width(),hfilter.height())-1)/2;
+	int vfsize = (__max(vfilter.width(),vfilter.height())-1)/2;
 	imfilter_hv(image,hfilter.data(),hfsize,vfilter.data(),vfsize);
 }
 
@@ -1425,8 +1425,8 @@ template <class T>
 template <class T1>
 void Image<T>::imfilter_hv_transpose(Image<T1>& image,const Image<double>& hfilter,const Image<double>& vfilter) const
 {
-	int hfsize = (___max(hfilter.width(),hfilter.height())-1)/2;
-	int vfsize = (___max(vfilter.width(),vfilter.height())-1)/2;
+	int hfsize = (__max(hfilter.width(),hfilter.height())-1)/2;
+	int vfsize = (__max(vfilter.width(),vfilter.height())-1)/2;
 	imfilter_hv_transpose(image,hfilter.data(),hfsize,vfilter.data(),vfsize);
 }
 
@@ -1492,12 +1492,12 @@ void Image<T>::collapse(Image<T1> &image,collapse_type type) const
 			case collapse_max:
 				data[i] = pData[offset];
 				for(int j=1;j<nChannels;j++)
-					data[i] = ___max(data[i],pData[offset+j]);
+					data[i] = __max(data[i],pData[offset+j]);
 				break;
 			case collapse_min:
 				data[i] = pData[offset];
 				for(int j = 1;j<nChannels;j++)
-					data[i]=___min(data[i],pData[offset+j]);
+					data[i]=__min(data[i],pData[offset+j]);
 				break;
 		}
 	}
@@ -1930,7 +1930,7 @@ void Image<T>::threshold()
 	else
 		ImgMax = 255;
 	for(int i = 0;i<nPixels*nChannels;i++)
-		pData[i] = ___min(___max(pData[i],0),ImgMax);
+		pData[i] = __min(__max(pData[i],0),ImgMax);
 }
 
 template <class T>
@@ -2285,10 +2285,10 @@ void Image<T>::warpImageBicubic(Image<T>& output,const Image<T1>& imdx,const Ima
 			int y0 = y;
 			int x1 = x0+1;
 			int y1 = y0+1;
-			x0 = ___min(___max(x0,0),imWidth-1);
-			x1 = ___min(___max(x1,0),imWidth-1);
-			y0 = ___min(___max(y0,0),imHeight-1);
-			y1 = ___min(___max(y1,0),imHeight-1);
+			x0 = __min(__max(x0,0),imWidth-1);
+			x1 = __min(__max(x1,0),imWidth-1);
+			y0 = __min(__max(y0,0),imHeight-1);
+			y1 = __min(__max(y1,0),imHeight-1);
 
 			double dx = x - x0;
 			double dy = y- y0;
@@ -2313,7 +2313,7 @@ void Image<T>::warpImageBicubic(Image<T>& output,const Image<T1>& imdx,const Ima
 					                                                                    a[1][0]*dx +   a[1][1]*dx*dy   + a[1][2]*dx*dy2   + a[1][3]*dx*dy3 +
 																						a[2][0]*dx2 + a[2][1]*dx2*dy + a[2][2]*dx2*dy2 + a[2][3]*dx2*dy3+
 																						a[3][0]*dx3 + a[3][1]*dx3*dy + a[3][2]*dx3*dy2 + a[3][3]*dx3*dy3;
-				//output.pData[offset*nChannels+k] = ___max(___min(output.pData[offset*nChannels+k],ImgMax),0);
+				//output.pData[offset*nChannels+k] = __max(__min(output.pData[offset*nChannels+k],ImgMax),0);
 
 			}
 		}
@@ -2347,10 +2347,10 @@ void Image<T>::warpImageBicubic(Image<T>& output,const Image<T1>& coeff,const Im
 			int y0 = y;
 			int x1 = x0+1;
 			int y1 = y0+1;
-			x0 = ___min(___max(x0,0),imWidth-1);
-			x1 = ___min(___max(x1,0),imWidth-1);
-			y0 = ___min(___max(y0,0),imHeight-1);
-			y1 = ___min(___max(y1,0),imHeight-1);
+			x0 = __min(__max(x0,0),imWidth-1);
+			x1 = __min(__max(x1,0),imWidth-1);
+			y0 = __min(__max(y0,0),imHeight-1);
+			y1 = __min(__max(y1,0),imHeight-1);
 
 			double dx = x - x0;
 			double dy = y- y0;
@@ -2375,7 +2375,7 @@ void Image<T>::warpImageBicubic(Image<T>& output,const Image<T1>& coeff,const Im
 					                                                                    a[1][0]*dx +   a[1][1]*dx*dy   + a[1][2]*dx*dy2   + a[1][3]*dx*dy3 +
 																						a[2][0]*dx2 + a[2][1]*dx2*dy + a[2][2]*dx2*dy2 + a[2][3]*dx2*dy3+
 																						a[3][0]*dx3 + a[3][1]*dx3*dy + a[3][2]*dx3*dy2 + a[3][3]*dx3*dy3;
-				//output.pData[offset*nChannels+k] = ___max(___min(output.pData[offset*nChannels+k],ImgMax),0);
+				//output.pData[offset*nChannels+k] = __max(__min(output.pData[offset*nChannels+k],ImgMax),0);
 
 			}
 		}
@@ -2447,10 +2447,10 @@ void Image<T>::warpImageBicubicCoeff(Image<T1>& output) const
 			int y0 = i;
 			int x1 = x0+1;
 			int y1 = y0+1;
-			x0 = ___min(___max(x0,0),imWidth-1);
-			x1 = ___min(___max(x1,0),imWidth-1);
-			y0 = ___min(___max(y0,0),imHeight-1);
-			y1 = ___min(___max(y1,0),imHeight-1);
+			x0 = __min(__max(x0,0),imWidth-1);
+			x1 = __min(__max(x1,0),imWidth-1);
+			y0 = __min(__max(y0,0),imHeight-1);
+			y1 = __min(__max(y1,0),imHeight-1);
 
 			for(int k = 0;k<nChannels;k++)
 			{
@@ -2544,10 +2544,10 @@ void Image<T>::warpImageBicubicRef(const Image<T>& ref,Image<T>& output,const Im
 			int y0 = y;
 			int x1 = x0+1;
 			int y1 = y0+1;
-			x0 = ___min(___max(x0,0),imWidth-1);
-			x1 = ___min(___max(x1,0),imWidth-1);
-			y0 = ___min(___max(y0,0),imHeight-1);
-			y1 = ___min(___max(y1,0),imHeight-1);
+			x0 = __min(__max(x0,0),imWidth-1);
+			x1 = __min(__max(x1,0),imWidth-1);
+			y0 = __min(__max(y0,0),imHeight-1);
+			y1 = __min(__max(y1,0),imHeight-1);
 
 			double dx = x - x0;
 			double dy = y- y0;
@@ -2572,7 +2572,7 @@ void Image<T>::warpImageBicubicRef(const Image<T>& ref,Image<T>& output,const Im
 					                                                                    a[1][0]*dx +   a[1][1]*dx*dy   + a[1][2]*dx*dy2   + a[1][3]*dx*dy3 +
 																						a[2][0]*dx2 + a[2][1]*dx2*dy + a[2][2]*dx2*dy2 + a[2][3]*dx2*dy3+
 																						a[3][0]*dx3 + a[3][1]*dx3*dy + a[3][2]*dx3*dy2 + a[3][3]*dx3*dy3;
-				//output.pData[offset*nChannels+k] = ___max(___min(output.pData[offset*nChannels+k],ImgMax),0);
+				//output.pData[offset*nChannels+k] = __max(__min(output.pData[offset*nChannels+k],ImgMax),0);
 				//if(!(output.pData[offset*nChannels+k]<100000 && output.pData[offset*nChannels+k]>-100000)) // bound the values
 				//	output.pData[offset*nChannels+k] = ref.pData[offset*nChannels+k];
 
@@ -2614,10 +2614,10 @@ void Image<T>::warpImageBicubicRef(const Image<T>& ref,Image<T>& output,const Im
 			int y0 = y;
 			int x1 = x0+1;
 			int y1 = y0+1;
-			x0 = ___min(___max(x0,0),imWidth-1);
-			x1 = ___min(___max(x1,0),imWidth-1);
-			y0 = ___min(___max(y0,0),imHeight-1);
-			y1 = ___min(___max(y1,0),imHeight-1);
+			x0 = __min(__max(x0,0),imWidth-1);
+			x1 = __min(__max(x1,0),imWidth-1);
+			y0 = __min(__max(y0,0),imHeight-1);
+			y1 = __min(__max(y1,0),imHeight-1);
 
 			double dx = x - x0;
 			double dy = y- y0;
@@ -2640,7 +2640,7 @@ void Image<T>::warpImageBicubicRef(const Image<T>& ref,Image<T>& output,const Im
 					                                                                    a[1][0]*dx +   a[1][1]*dx*dy   + a[1][2]*dx*dy2   + a[1][3]*dx*dy3 +
 																						a[2][0]*dx2 + a[2][1]*dx2*dy + a[2][2]*dx2*dy2 + a[2][3]*dx2*dy3+
 																						a[3][0]*dx3 + a[3][1]*dx3*dy + a[3][2]*dx3*dy2 + a[3][3]*dx3*dy3;
-				//output.pData[offset*nChannels+k] = ___max(___min(output.pData[offset*nChannels+k],ImgMax),0);
+				//output.pData[offset*nChannels+k] = __max(__min(output.pData[offset*nChannels+k],ImgMax),0);
 				//if(!(output.pData[offset*nChannels+k]<100000 && output.pData[offset*nChannels+k]>-100000)) // bound the values
 				//	output.pData[offset*nChannels+k] = ref.pData[offset*nChannels+k];
 
@@ -2693,7 +2693,7 @@ T Image<T>::max() const
 {
 	T Max = pData[0];
 	for(int i = 0;i<nElements; i++)
-		Max = ___max(Max,pData[i]);
+		Max = __max(Max,pData[i]);
 	return Max;
 }
 
@@ -2702,7 +2702,7 @@ T Image<T>::min() const
 {
 	T Min = pData[0];
 	for(int i = 0;i<nElements;i++)
-		Min = ___min(Min,pData[i]);
+		Min = __min(Min,pData[i]);
 	return Min;
 }
 

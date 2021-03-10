@@ -10,6 +10,7 @@ import pyflow
 from skimage import img_as_float
 from random import randrange
 import os.path
+import sys
 
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in [".png", ".jpg", ".jpeg"])
@@ -54,7 +55,7 @@ def load_img(filepath, nFrames, scale, other_dataset, upscale_only):
     
     return target, input, neigbor
 
-def load_img_future(filepath, nFrames, scale, other_dataset, upscale_only):
+def load_img_future(filepath, nFrames, scale, other_dataset, upscale_only = False):
     tt = int(nFrames/2)
     if other_dataset:
         if upscale_only:
@@ -189,6 +190,10 @@ class DatasetFromFolder(data.Dataset):
     def __init__(self, image_dir,nFrames, upscale_factor, data_augmentation, file_list, other_dataset, patch_size, future_frame, transform=None):
         super(DatasetFromFolder, self).__init__()
         alist = [line.rstrip() for line in open(join(image_dir,file_list))]
+        image_filenames = [join(image_dir,x) for x in alist]
+        # print(alist)
+        # print(image_filenames)
+        # sys.exit()
         self.image_filenames = [join(image_dir,x) for x in alist]
         self.nFrames = nFrames
         self.upscale_factor = upscale_factor

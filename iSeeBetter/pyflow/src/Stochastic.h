@@ -134,7 +134,7 @@ T CStochastic::Min(int NumData,T* pData)
 	int i;
 	T result=pData[0];
 	for(i=1;i<NumData;i++)
-		result=___min(result,pData[i]);
+		result=__min(result,pData[i]);
 	return result;
 }
 
@@ -144,7 +144,7 @@ T CStochastic::Min(int NumData,T* pData1,T* pData2)
 	int i;
 	T result=pData1[0]+pData2[0];
 	for(i=1;i<NumData;i++)
-		result=___min(result,pData1[i]+pData2[i]);
+		result=__min(result,pData1[i]+pData2[i]);
 	return result;
 }
 
@@ -154,7 +154,7 @@ T CStochastic::Max(int NumData,T* pData)
 	int i;
 	T result=pData[0];
 	for(i=1;i<NumData;i++)
-		result=___max(result,pData[i]);
+		result=__max(result,pData[i]);
 	return result;
 }
 
@@ -245,7 +245,7 @@ void CStochastic::ComputeVectorMean(int Dim,int NumData,T1* pData,T2* pMean,doub
 	memset(pMean,0,sizeof(T2)*Dim);
 	bool IsWeightLoaded;
 	double Sum;
-	if(pWeight=NULL)
+	if(pWeight==NULL)
 		IsWeightLoaded=false;
 	else
 		IsWeightLoaded=true;
@@ -402,7 +402,7 @@ void CStochastic::GaussianFiltering(T1* pSrcArray,T2* pDstArray,int NumPoints,in
 			for(j=-size;j<=size;j++)
 			{
 				u=i+j;
-				u=___max(___min(u,NumPoints-1),0);
+				u=__max(__min(u,NumPoints-1),0);
 				temp+=pSrcArray[u*nChannels+l]*pGaussian[j+size];
 			}
 			pDstArray[i*nChannels+l]=temp;

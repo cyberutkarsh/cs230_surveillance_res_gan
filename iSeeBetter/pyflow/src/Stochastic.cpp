@@ -105,6 +105,6 @@ double CStochastic::entropy(double* pDensity,int n)
 	double result=0;
 	int i;
 	for(i=0;i<n;i++)
-		result-=log(___max(pDensity[i],1E-6))*pDensity[i];
+		result-=log(__max(pDensity[i],1E-6))*pDensity[i];
 	return result;
 }

@@ -14,6 +14,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import utils
+import sys
 
 ################################################## iSEEBETTER TRAINER KNOBS ############################################
 UPSCALE_FACTOR = 4
@@ -201,6 +202,10 @@ def main():
 
     # Load dataset
     logger.info('==> Loading datasets')
+    # print(args.file_list)
+    # sys.exit()
+
+
     train_set = get_training_set(args.data_dir, args.nFrames, args.upscale_factor, args.data_augmentation,
                                  args.file_list,
                                  args.other_dataset, args.patch_size, args.future_frame)
@@ -254,6 +259,7 @@ def main():
         modelPath = os.path.join(args.save_folder + args.pretrained_sr)
         utils.loadPreTrainedModel(gpuMode=args.gpu_mode, model=netG, modelPath=modelPath)
 
+    # sys.exit()
     for epoch in range(args.start_epoch, args.nEpochs + 1):
         runningResults = trainModel(epoch, training_data_loader, netG, netD, optimizerD, optimizerG, generatorCriterion, device, args)
 

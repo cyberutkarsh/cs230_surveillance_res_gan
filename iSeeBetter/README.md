@@ -166,3 +166,7 @@ Use parameter ```--upscale_only``` to turn off initial downscaling.
 Credits:
 - [SRGAN Implementation](https://github.com/leftthomas/SRGAN) by LeftThomas.
 - We used [RBPN-PyTorch](https://github.com/alterzero/RBPN-PyTorch) as a baseline for our Generator implementation.
+
+
+## Commands
+python3 iSeeBetterTrain.py --data_dir="./SPMCS" --file_list="spcms_trainlist.txt" --upscale_factor=4

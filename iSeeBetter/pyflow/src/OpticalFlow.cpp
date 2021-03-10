@@ -10,7 +10,7 @@
 using namespace std;
 
 #ifndef _MATLAB
-	bool OpticalFlow::IsDisplay=false;
+	bool OpticalFlow::IsDisplay=true;
 #else
 	bool OpticalFlow::IsDisplay=false;
 #endif
@@ -843,6 +843,8 @@ void OpticalFlow::estLaplacianNoise(const DImage& Im1,const DImage& Im2,Vector<d
 	{
 		if(total[k]==0)
 		{
+			cout<<"All the pixels are invalid in estimation Laplacian noise!!!"<<endl;
+			cout<<"Something severely wrong happened!!!"<<endl;
 			para[k] = 0.001;
 		}
 		else
@@ -1166,8 +1168,8 @@ bool OpticalFlow::SaveOpticalFlow(const DImage& flow, const char* filename)
 	foo.allocate(flow);
 	for(int i =0;i<flow.npixels();i++)
 	{
-		foo.data()[i*2] = (___min(___max(flow.data()[i*2],-200),200)+200)*160;
-		foo.data()[i*2+1] = (___min(___max(flow.data()[i*2+1],-200),200)+200)*160;
+		foo.data()[i*2] = (__min(__max(flow.data()[i*2],-200),200)+200)*160;
+		foo.data()[i*2+1] = (__min(__max(flow.data()[i*2+1],-200),200)+200)*160;
 	}
 	return foo.saveImage(filename);
 }
@@ -1178,8 +1180,8 @@ bool OpticalFlow::SaveOpticalFlow(const DImage& flow,ofstream& myfile)
 	foo.allocate(flow);
 	for(int i =0;i<flow.npixels();i++)
 	{
-		foo.data()[i*2] = (___min(___max(flow.data()[i*2],-200),200)+200)*160;
-		foo.data()[i*2+1] = (___min(___max(flow.data()[i*2+1],-200),200)+200)*160;
+		foo.data()[i*2] = (__min(__max(flow.data()[i*2],-200),200)+200)*160;
+		foo.data()[i*2+1] = (__min(__max(flow.data()[i*2+1],-200),200)+200)*160;
 	}
 	return foo.saveImage(myfile);
 }

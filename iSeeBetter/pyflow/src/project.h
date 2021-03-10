@@ -38,13 +38,13 @@ void _Rlease2DBuffer(T** pBuffer,size_t nElements)
 #ifdef _LINUX_MAC
 
 template <class T1,class T2>
-T1 ___min(T1 a, T2 b)
+T1 __min(T1 a, T2 b)
 {
   return (a>b)?b:a;
 }
 
 template <class T1,class T2>
-T1 ___max(T1 a, T2 b)
+T1 __max(T1 a, T2 b)
 {
   return (a<b)?b:a;
 }

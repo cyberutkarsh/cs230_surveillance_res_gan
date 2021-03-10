@@ -93,18 +93,18 @@ public:
 //          Max = pImagePlane[0];
 //          if(!IsFloat)
 //              for(int i = 0;i<nElements;i++)
-//                  Max = ___max(Max,abs(pImagePlane[i]));
+//                  Max = __max(Max,abs(pImagePlane[i]));
 //          else
 //              for(int i=0;i<nElements;i++)
-//                  Max = ___max(Max,fabs((double)pImagePlane[i]));
+//                  Max = __max(Max,fabs((double)pImagePlane[i]));
 //          Max*=2;
 //          break;
 //      case normalized:
 //          Max = Min = pImagePlane[0];
 //          for(int i = 0;i<nElements;i++)
 //          {
-//              Max = ___max(Max,pImagePlane[i]);
-//              Min = ___min(Min,pImagePlane[i]);
+//              Max = __max(Max,pImagePlane[i]);
+//              Min = __min(Min,pImagePlane[i]);
 //          }
 //          break;
 //  }
@@ -126,7 +126,7 @@ public:
 //                      if(IsFloat)
 //                          im.data[offset2+j] = pImagePlane[offset1+j]*255;
 //                      else
-//                          im.data[offset2+j] = ___max(___min(pImagePlane[offset1+j],255),0);
+//                          im.data[offset2+j] = __max(__min(pImagePlane[offset1+j],255),0);
 //                      break;
 //                  case derivative:
 //
@@ -253,17 +253,17 @@ bool ImageIO::writeImage(const QString& filename, const T*& pImagePlane,int widt
             for(int i=0;i<nPixels;i++)
             {
                 if(IsFloat)
-                    _Max=___max(_Max,fabs((double)pImagePlane[i]));
+                    _Max=__max(_Max,fabs((double)pImagePlane[i]));
                 else
-                    _Max=___max(_Max,abs(pImagePlane[i]));
+                    _Max=__max(_Max,abs(pImagePlane[i]));
             }
             break;
         case normalized:
             _Min=_Max=pImagePlane[0];
             for(int i=1;i<nElements;i++)
             {
-                _Min=___min(_Min,pImagePlane[i]);
-                _Max=___max(_Max,pImagePlane[i]);
+                _Min=__min(_Min,pImagePlane[i]);
+                _Max=__max(_Max,pImagePlane[i]);
             }
             break;
     }
@@ -330,9 +330,9 @@ unsigned char ImageIO::convertPixel(const T& value,bool IsFloat,ImageType type,T
     switch(type){
         case standard:
             if(IsFloat)
-                return ___max(___min(value*255,255),0);
+                return __max(__min(value*255,255),0);
             else
-                return ___max(___min(value,255),0);
+                return __max(__min(value,255),0);
             break;
         case derivative:
             return (double)((double)value/_Max+1)/2*255;
