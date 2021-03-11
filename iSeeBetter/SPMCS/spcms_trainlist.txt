@@ -4,7 +4,7 @@ TPVTG_003/truth
 RMVTG_024/truth
 RMVTG_011
 PRVTG_012
-PRVTG_008
+PRVTG_008/truth
 philips_hkc11_001/truth
 philips_hkc05_001/truth
 philips_hkc04_002/truth

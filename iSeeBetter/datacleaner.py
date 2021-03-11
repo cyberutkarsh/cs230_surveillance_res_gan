@@ -37,7 +37,7 @@ def rename_images(dir_images):
             dir_images[key]['image_key'] = key
 
     for image in dir_images:
-        print(image)
+        # print(image)
         os.rename(image['full_file_name'], image['final_image_name'])
 
 def main():
@@ -48,31 +48,19 @@ def main():
         # you may also want to remove whitespace characters like `\n` at the end of each line
     image_folders = [x.strip() for x in content] 
 
-    image_folders = ['hk004_006/truth']
+    # image_folders = ['PRVTG_008/truth']
 
     for image_folder in image_folders:
+        print('STARTED', image_folder)
         base_folder = './SPMCS/' + image_folder
         dir_images = os.listdir(base_folder)
         image_names = reset_image_names(dir_images, base_folder, False)
-        print(image_names)
+        # print(image_names)
         rename_images(image_names)
+        
     
     #print(image_folders)
     sys.exit()
-    for filename in SPMCS:
-        if ".txt" not in filename:
-            dir_images = os.listdir('./SPMCS/' + filename)
-            dir_images.sort()
-
-            pngCount = 0
-            for count, image_name in enumerate(dir_images):
-                if '.png' in image_name:
-                    os.rename('./SPMCS/' + filename + '/' + image_name, './SPMCS/' + filename + '/im' + str(pngCount) + '.png')
-                    # print(pngCount, image_name)
-                    pngCount += 1
-                    
-            # print(filename)
-            # sys.exit()
 
 if __name__ == "__main__":
     main()
