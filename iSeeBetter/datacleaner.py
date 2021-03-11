@@ -9,7 +9,7 @@ Rename images in SPMCS so that frame-by-by name is im1.png, im2.png etc.
 
 def reset_image_names(dir_images, base_folder, dryrun = True):
     new_file_names = []
-    #pngCount = 0
+    
     for count, image_name in enumerate(dir_images):
         if '.png' in image_name:
             new_image_name = image_name.replace('im', '')
@@ -37,7 +37,7 @@ def rename_images(dir_images):
             dir_images[key]['image_key'] = key
 
     for image in dir_images:
-        # print(image)
+        
         os.rename(image['full_file_name'], image['final_image_name'])
 
 def main():
@@ -45,9 +45,10 @@ def main():
 
     with open('./SPMCS/spcms_trainlist.txt') as f:
         content = f.readlines()
-        # you may also want to remove whitespace characters like `\n` at the end of each line
+        
     image_folders = [x.strip() for x in content] 
 
+    # Uncommend if you want to debug specific folder
     # image_folders = ['PRVTG_008/truth']
 
     for image_folder in image_folders:
@@ -55,11 +56,10 @@ def main():
         base_folder = './SPMCS/' + image_folder
         dir_images = os.listdir(base_folder)
         image_names = reset_image_names(dir_images, base_folder, False)
-        # print(image_names)
+        
         rename_images(image_names)
         
     
-    #print(image_folders)
     sys.exit()
 
 if __name__ == "__main__":
