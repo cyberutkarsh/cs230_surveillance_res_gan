@@ -10,6 +10,10 @@ from distutils.extension import Extension
 from glob import glob
 
 import numpy
+# import os
+
+# os.environ["CC"] = "gcc" 
+# os.environ["CXX"] = "gcc"
 
 sourcefiles = ['pyflow.pyx', ]
 sourcefiles.extend(glob("src/*.cpp"))
