@@ -13,12 +13,13 @@ import time
 import cv2
 import math
 import logger
+import sys
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
-parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
 #parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
-#parser.add_argument('-m', '--model', default="weights/RBPN_4x.pth", help="Model")
+#parser.add_argument('-m', '--model', default="weights/netG_epoch_4_1.pth", help="Model")
+parser.add_argument('-m', '--model', default="weights/RBPN_4x.pth", help="Model")
 parser.add_argument('-o', '--output', default='Results/', help="Location to save test results")
 parser.add_argument('-s', '--upscale_factor', type=int, default=4, help="Super-Resolution Scale Factor")
 parser.add_argument('-r', '--residual', action='store_true', required=False, help="")
@@ -84,9 +85,9 @@ def eval():
     upscale_only = args.upscale_only
     if not upscale_only:
         avg_psnr_predicted = 0.0
-    for batch in testing_data_loader:
-        input, target, neigbor, flow, bicubic = batch[0], batch[1], batch[2], batch[3], batch[4]
         
+    for batch in testing_data_loader:
+        input, target, neigbor, flow, bicubic, name = batch[0], batch[1], batch[2], batch[3], batch[4], batch[5]
         with torch.no_grad():
             if cuda:
                 input = Variable(input).cuda(gpus_list[0])
@@ -109,11 +110,15 @@ def eval():
         
         if args.residual:
             prediction = prediction + bicubic
-            
         t1 = time.time()
         print("==> Processing: %s || Timer: %.4f sec." % (str(count), (t1 - t0)))
-        save_img(prediction.cpu().data, str(count), True)
-        save_img(target, str(count), False)
+        
+        splitted_name = name[0].split("/")
+        
+        formatted_name = splitted_name[-2] + '_x264_' + splitted_name[-1]
+        
+        save_img(prediction.cpu().data, str(count), True, formatted_name)
+        #save_img(target, str(count), False)
         
         prediction = prediction.cpu()
         prediction = prediction.data[0].numpy().astype(np.float32)
@@ -130,7 +135,7 @@ def eval():
     if not upscale_only:  # Otherwise the print will error on '-u'
         print("Avg PSNR Predicted = ", avg_psnr_predicted/count)
 
-def save_img(img, img_name, pred_flag):
+def save_img(img, img_name, pred_flag, name):
     save_img = img.squeeze().clamp(0, 1).numpy().transpose(1,2,0)
 
     # save img
@@ -139,7 +144,7 @@ def save_img(img, img_name, pred_flag):
         os.makedirs(save_dir)
         
     if pred_flag:
-        save_fn = save_dir +'/'+ img_name+'_'+args.model_type+'F'+str(args.nFrames)+'.png'
+        save_fn = save_dir +'/'+ name
     else:
         save_fn = save_dir +'/'+ img_name+'.png'
     cv2.imwrite(save_fn, cv2.cvtColor(save_img*255, cv2.COLOR_BGR2RGB),  [cv2.IMWRITE_PNG_COMPRESSION, 0])

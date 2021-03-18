@@ -80,6 +80,7 @@ def trainModel(epoch, training_data_loader, netG, netD, optimizerD, optimizerG, 
         netD.zero_grad()
 
         input, target, neigbor, flow, bicubic = data[0], data[1], data[2], data[3], data[4]
+        
         if args.gpu_mode and torch.cuda.is_available():
             input = Variable(input).cuda()
             target = Variable(target).cuda()
@@ -178,19 +179,24 @@ def saveModelParams(epoch, runningResults, netG, netD):
     logger.info("Checkpoint saved to {}".format('weights/netD_epoch_%d_%d.pth' % (UPSCALE_FACTOR, epoch)))
 
     # Save Loss\Scores\PSNR\SSIM
-    results['DLoss'].append(runningResults['DLoss'] / runningResults['batchSize'])
-    results['GLoss'].append(runningResults['GLoss'] / runningResults['batchSize'])
-    results['DScore'].append(runningResults['DScore'] / runningResults['batchSize'])
-    results['GScore'].append(runningResults['GScore'] / runningResults['batchSize'])
-    #results['PSNR'].append(validationResults['PSNR'])
-    #results['SSIM'].append(validationResults['SSIM'])
+    results['DLoss'] = runningResults['DLoss'] / runningResults['batchSize']
+    results['GLoss'] = runningResults['GLoss'] / runningResults['batchSize']
+    results['DScore'] = runningResults['DScore'] / runningResults['batchSize']
+    results['GScore'] = runningResults['GScore'] / runningResults['batchSize']
+    #results['PSNR'] = validationResults['PSNR']
+    #results['SSIM'] = validationResults['SSIM']
 
     if epoch % 1 == 0 and epoch != 0:
-        out_path = 'statistics/'
-        data_frame = pd.DataFrame(data={'DLoss': results['DLoss'], 'GLoss': results['GLoss'], 'DScore': results['DScore'],
-                                  'GScore': results['GScore']},#, 'PSNR': results['PSNR'], 'SSIM': results['SSIM']},
-                                  index=range(1, epoch + 1))
-        data_frame.to_csv(out_path + 'iSeeBetter_' + str(UPSCALE_FACTOR) + '_Train_Results.csv', index_label='Epoch')
+        out_path = 'statistics/' + 'iSeeBetter_' + str(UPSCALE_FACTOR) + '_Train_Results_UCF.csv'
+        
+        data = [{'epoch': epoch, 'DLoss': results['DLoss'], 'GLoss': results['GLoss'], 'DScore': results['DScore'],
+                                  'GScore': results['GScore']}]
+        
+        data_frame = pd.DataFrame(data)
+        if os.path.exists(out_path):
+            data_frame.to_csv(out_path, mode='a', header=False, index=False)
+        else:
+            data_frame.to_csv(out_path, index=False)
 
 def main():
     """ Lets begin the training process! """

@@ -136,16 +136,18 @@ def modcrop(img, modulo):
 def get_patch(img_in, img_tar, img_nn, patch_size, scale, nFrames, ix=-1, iy=-1):
     (ih, iw) = img_in.size
     (th, tw) = (scale * ih, scale * iw)
-
+    
     patch_mult = scale #if len(scale) > 1 else 1
     tp = patch_mult * patch_size
     ip = tp // scale
-
+    
+    
+    #print(iw, ih, ip)
     if ix == -1:
         ix = random.randrange(0, iw - ip + 1)
     if iy == -1:
         iy = random.randrange(0, ih - ip + 1)
-
+    
     (tx, ty) = (scale * ix, scale * iy)
 
     img_in = img_in.crop((iy,ix,iy + ip, ix + ip))#[:, iy:iy + ip, ix:ix + ip]
@@ -253,6 +255,8 @@ class DatasetFromFolderTest(data.Dataset):
 
         bicubic = rescale_img(input, self.upscale_factor)
         
+        name = self.image_filenames[index]
+        
         if self.transform:
             target = self.transform(target)
             input = self.transform(input)
@@ -260,7 +264,7 @@ class DatasetFromFolderTest(data.Dataset):
             neigbor = [self.transform(j) for j in neigbor]
             flow = [torch.from_numpy(j.transpose(2,0,1)) for j in flow]
             
-        return input, target, neigbor, flow, bicubic
+        return input, target, neigbor, flow, bicubic, name
       
     def __len__(self):
         return len(self.image_filenames)
